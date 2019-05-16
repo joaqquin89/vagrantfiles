@@ -1,0 +1,31 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+#DEFINICION DE LOS HOSTS EN MI RECETA VAGRANT	 
+hosts = {
+ 
+  "SW-master" => "192.168.88.10",
+ 
+  "Nodo1" => "192.168.88.11",
+ 
+  "Nodo2" => "192.168.88.12"
+}
+Vagrant.configure("2") do |config|
+  #box que vamos a ocupar para esta receta
+  config.vm.box = "precise64"
+  #URL de donde vamos a descaggar mi box de vagrant
+  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+
+#Ciclo for en donde imprimo el arreglo hosts 
+ hosts.each do |name, ip|
+   # defino los parametros de configuracion del vagrantfile 
+    config.vm.define name do |machine|
+      # defino la red 
+      machine.vm.network :private_network, ip: ip
+      #Esta relacionado a las configuraciones en el virtual box 
+      machine.vm.provider "virtualbox" do |v|
+        v.name = name
+      end
+    end
+  end
+end

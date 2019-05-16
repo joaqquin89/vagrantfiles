@@ -1,0 +1,30 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# This recipe allow create 3 nodes for create a swarm cluster
+hosts = {
+
+  "Master" => "192.168.88.10",
+
+  "NodoA" => "192.168.88.11",
+
+  "NodoB" => "192.168.88.12"
+}
+Vagrant.configure("2") do |config|
+  config.vm.box = "williamyeh/ubuntu-trusty64-docker"
+  #create 3 machines what allow write ip 
+  hosts.each do |name, ip_machine|
+
+    config.vm.define name do |machine|
+      machine.vm.network :private_network, ip: ip_machine
+      machine.vm.provider "virtualbox" do |v|
+        v.name = name
+        v.memory= 512
+      end
+      config.vm.provision "shell" do |s|
+        s.path = "configure_swarm.sh"
+        s.args   = [name, ip_machine]
+       end
+    end
+  end
+end

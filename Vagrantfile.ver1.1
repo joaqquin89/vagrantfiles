@@ -1,0 +1,39 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+#######INSTALACION DE CENTOS
+#EN ESTA RECETA DESCARGAMOS BOX Y LA NOMBRAMOS COMO CENTOS2 PARAMETRO VM.BOX
+#
+
+
+Vagrant.configure("2") do |config|
+
+  config.vm.define :nodo1 do |nodo1|
+    nodo1.vm.box = "centos2"
+    nodo1.vm.hostname="Sw-Master"
+    nodo1.vm.network :private_network,ip:"192.168.33.12"
+    nodo1.vm.provision "shell", inline: <<-SHELL
+      curl -fsSL https://get.docker.com/ | sh
+      sudo systemctl start docker
+    SHELL
+    nodo1.vm.provider "virtualbox" do |v|
+      v.memory = 1024
+      v.cpus = 2
+      v.name="SW-Master"
+    end
+  end
+  config.vm.define :nodo2 do |nodo2|
+    nodo2.vm.box = "centos2"
+    nodo2.vm.hostname="Nodo-1"
+    nodo2.vm.network :private_network,ip:"192.168.33.13"
+    nodo2.vm.provision "shell", inline: <<-SHELL
+      curl -fsSL https://get.docker.com/ | sh
+      sudo systemctl start docker
+    SHELL
+    nodo2.vm.provider "virtualbox" do |v|
+      v.memory = 1024
+      v.cpus = 2
+      v.name="NODO1"
+    end
+  end
+end
